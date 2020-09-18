@@ -21,19 +21,20 @@ public class Point2d extends AbstractPoint {
     @Override
     public Point2d translate(Double[] translateVector) {
         PointOperator.translate(this.vector, translateVector);
-        return null;
+       return this;
     }
 
     // TODO appliquer la transalation sur la classe courrante et retourner la reference
     public Point2d translate(Point2d translateVector) {
         PointOperator.translate(this.vector, translateVector.vector);
-        return null;
+        return this;
     }
 
     // TODO appliquer la rotation sur la classe courrante et retourner la reference
     @Override
     public Point2d rotate(Double[][] rotationMatrix) {
-        return null;
+        PointOperator.rotate(this.vector, rotationMatrix);
+        return this;
     }
 
     // TODO appliquer la rotation sur la classe courrante et retourner la reference
