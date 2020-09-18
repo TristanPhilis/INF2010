@@ -13,7 +13,7 @@ public class BaseShape implements Cloneable {
 
     // TODO prendre une liste de points et creer une nouvelle forme.
     public BaseShape(Collection<Point2d> coords) {
-        // ...
+        this.coords.addAll(coords);
     }
 
     // TODO ajouter ou retirer des coordonnees a la liste de points.
