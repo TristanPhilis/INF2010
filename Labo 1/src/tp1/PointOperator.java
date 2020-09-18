@@ -24,10 +24,16 @@ public final class PointOperator {
     // TODO appliquer la translation sur le vecteur d'entree.
     public static void multiply(Double[] vector, Double multiplier) {
         // ...
+        for (int i = 0; i < vector.length; i++){
+            vector[i] = vector[i] * multiplier;
+        }
     }
 
     // TODO appliquer la translation sur le vecteur d'entree.
     public static void add(Double[] vector, Double adder) {
         // ...
+        for (int i = 0; i < vector.length; i++){
+            vector[i] = vector[i] + adder;
+        }
     }
 }
