@@ -8,7 +8,7 @@ public class BaseShape implements Cloneable {
 
     // TODO Initialiser la liste de points.
     public BaseShape() {
-        // ...
+        this.coords = Collections.EMPTY_LIST;
     }
 
     // TODO prendre une liste de points et creer une nouvelle forme.
