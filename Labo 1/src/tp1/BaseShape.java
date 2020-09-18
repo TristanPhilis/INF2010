@@ -8,12 +8,12 @@ public class BaseShape implements Cloneable {
 
     // TODO Initialiser la liste de points.
     public BaseShape() {
-        this.coords = Collections.EMPTY_LIST;
+        this.coords = new ArrayList<>();
     }
 
     // TODO prendre une liste de points et creer une nouvelle forme.
     public BaseShape(Collection<Point2d> coords) {
-        this.coords.addAll(coords);
+        this.coords = new ArrayList<>(coords);
     }
 
     // TODO ajouter ou retirer des coordonnees a la liste de points.
@@ -28,29 +28,35 @@ public class BaseShape implements Cloneable {
     }
     public BaseShape addAll(Collection<Point2d> coords) {
         this.coords.addAll(coords);
-        return null;
+        return this;
     }
     public BaseShape remove(Point2d coord) {
-        // ...
-        return null;
+        coords.remove(coord);
+        return this;
     }
     public BaseShape remove(BaseShape shape) {
-        // ...
-        return null;
+        for(Point2d iter : shape.coords){
+            remove(iter);
+        }
+        return this;
     }
     public BaseShape removeAll(Collection<Point2d> coords) {
-        // ...
-        return null;
+        this.coords.removeAll(coords);
+        return this;
     }
 
     // TODO retourner les coordonnees de la liste.
     public Collection<Point2d> getCoords() {
-        return null;
+        return coords;
     }
 
     // TODO retourner une nouvelle liste ou tous les points sont des copy
     public Collection<Point2d> getCoordsDeepCopy() {
-        return null;
+        Collection<Point2d> deepCopy = new ArrayList<>();
+        for(Point2d iter : coords){
+            deepCopy.add(iter.clone());
+        }
+        return deepCopy;
     }
 
     // TODO appliquer la translation sur la forme.
@@ -94,6 +100,6 @@ public class BaseShape implements Cloneable {
 
     // TODO retourner une nouvelle forme.
     public BaseShape clone() {
-        return this;
+        return new BaseShape(getCoordsDeepCopy());
     }
 }
