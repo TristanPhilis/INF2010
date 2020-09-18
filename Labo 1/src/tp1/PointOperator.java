@@ -11,11 +11,11 @@ public final class PointOperator {
 
     // TODO appliquer la translation sur le vecteur d'entree.
     public static void rotate(Double[] vector, Double[][] rotationMatrix) {
-        Double[] tempVector = vector;
+        Double[] tempVector = vector.clone();
         for(int v = 0; v < tempVector.length; v++){
             vector[v] = 0.0;
             for(int m = 0; m < tempVector.length; m++){
-                vector[v] += tempVector[m]*rotationMatrix[v][m];
+                vector[v] += tempVector[m] * rotationMatrix[v][m];
             }
         }
     }
@@ -23,7 +23,7 @@ public final class PointOperator {
     // TODO appliquer la translation sur le vecteur d'entree.
     public static void divide(Double[] vector, Double divider) {
         for(int i = 0; i < vector.length; i++){
-            vector[i] = vector[i]/divider;
+            vector[i] = vector[i] / divider;
         }
     }
 
