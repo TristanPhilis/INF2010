@@ -14,8 +14,9 @@ public class Point2d extends AbstractPoint {
     // TODO creer un point a partir d'un vecteur de donnees
     public Point2d(Double[] vector) {
         super(null /*...*/);
-        this.vector[X] = vector[X];
-        this.vector[Y] = vector[Y];
+        for(int i = 0; i < vector.length; i++){
+            this.vector[i] = vector[i];
+        }
     }
 
     public Double X() { return vector[X];}
