@@ -7,11 +7,15 @@ public class Point2d extends AbstractPoint {
     // TODO creer un point en 2d avec 2 donnees
     public Point2d(Double x, Double y) {
         super(null /*...*/);
+        this.vector[X] = x;
+        this.vector[Y] = y;
     }
 
     // TODO creer un point a partir d'un vecteur de donnees
     public Point2d(Double[] vector) {
         super(null /*...*/);
+        this.vector[X] = vector[X];
+        this.vector[Y] = vector[Y];
     }
 
     public Double X() { return vector[X];}
@@ -20,11 +24,13 @@ public class Point2d extends AbstractPoint {
     // TODO appliquer la transalation sur la classe courrante et retourner la reference
     @Override
     public Point2d translate(Double[] translateVector) {
+        PointOperator.translate(this.vector, translateVector);
         return null;
     }
 
     // TODO appliquer la transalation sur la classe courrante et retourner la reference
     public Point2d translate(Point2d translateVector) {
+        PointOperator.translate(this.vector, translateVector.vector);
         return null;
     }
 
