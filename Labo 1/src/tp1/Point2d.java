@@ -39,30 +39,43 @@ public class Point2d extends AbstractPoint {
 
     // TODO appliquer la rotation sur la classe courrante et retourner la reference
     public Point2d rotate(Double angle) {
-        return null;
+        Double[][] rotationalMatrix = new Double[2][2];
+        rotationalMatrix[0][0] = Math.cos(angle);
+        rotationalMatrix[0][1] = -Math.sin(angle);
+        rotationalMatrix[1][0] = Math.sin(angle);
+        rotationalMatrix[1][1] = Math.cos(angle);
+
+        return rotate(rotationalMatrix);
     }
 
     // TODO appliquer la division sur la classe courrante et retourner la reference
     @Override
     public Point2d divide(Double divider) {
-        return null;
+        PointOperator.divide(vector, divider);
+        return this;
     }
 
     // TODO appliquer la multiplication sur la classe courrante et retourner la reference
     @Override
     public Point2d multiply(Double multiplier) {
-        return null;
+        PointOperator.multiply(vector, multiplier);
+        return this;
     }
 
     // TODO appliquer la addition sur la classe courrante et retourner la reference
     @Override
     public Point2d add(Double adder) {
-        return null;
+        PointOperator.add(vector, adder);
+        return this;
     }
 
     // TODO creer un nouveau point.
     @Override
     public Point2d clone() {
-        return this;
+        Point2d clonedPoint = new Point2d(vector);
+        for(int i = 0; i < vector.length; i++){
+            clonedPoint.vector[i] = vector[i];
+        }
+        return clonedPoint;
     }
 }
