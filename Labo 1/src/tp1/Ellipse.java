@@ -5,18 +5,27 @@ import java.util.Collection;
 public class Ellipse extends BaseShape {
     // TODO creer une ellipse avec une largeur et une longueur.
     public Ellipse(Double widthRadius, Double heightRadius) {
-        // ...
+        for(double i = -widthRadius/2; i < widthRadius/2; i++){
+            for(double j = -heightRadius/2; j < heightRadius/2; j++){
+                if(Math.pow(i/widthRadius, 2) + Math.pow(j/heightRadius, 2) <= 1){
+                    getCoords().add(new Point2d(i,j));
+                }
+            }
+        }
     }
+
 
     // TODO creer une ellipse avec les dimensions contenu dans un Point.
     public Ellipse(Point2d dimensions) {
         // ...
     }
 
+
     // TODO initialiser le parent.
     private Ellipse(Collection<Point2d> coords) {
         // ...
     }
+
 
     // TODO appliquer la translation sur la forme.
     @Override
@@ -24,11 +33,13 @@ public class Ellipse extends BaseShape {
         return null;
     }
 
+
     // TODO appliquer la rotation sur la forme.
     @Override
     public Ellipse rotate(Double angle) {
         return null;
     }
+
 
     // TODO retourner une nouvelle forme.
     @Override

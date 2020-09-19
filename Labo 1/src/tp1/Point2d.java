@@ -11,7 +11,7 @@ public class Point2d extends AbstractPoint {
 
     // TODO creer un point a partir d'un vecteur de donnees
     public Point2d(Double[] vector) {
-        super(vector);
+        super(vector.clone());
     }
 
     public Double X() { return vector[X];}
