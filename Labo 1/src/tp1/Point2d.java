@@ -21,12 +21,12 @@ public class Point2d extends AbstractPoint {
     @Override
     public Point2d translate(Double[] translateVector) {
         PointOperator.translate(this.vector, translateVector);
-       return this;
+        return this;
     }
 
     // TODO appliquer la transalation sur la classe courrante et retourner la reference
     public Point2d translate(Point2d translateVector) {
-        PointOperator.translate(this.vector, translateVector.vector);
+        translate(translateVector.vector);
         return this;
     }
 

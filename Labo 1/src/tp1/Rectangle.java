@@ -8,7 +8,7 @@ public class Rectangle extends BaseShape {
         super();
         for(double i = -width/2; i < width/2; i++){
             for(double j = - height/2; j < height/2; j++){
-                getCoords().add(new Point2d(i,j));
+                add(new Point2d(i,j));
             }
         }
     }

@@ -5,7 +5,7 @@ public final class PointOperator {
     // TODO appliquer la translation sur le vecteur d'entree.
     public static void translate(Double[] vector, Double[] translateVector) {
         for(int i = 0; i < vector.length; i++){
-            vector[i] = vector[i] + translateVector[i];
+            vector[i] += translateVector[i];
         }
     }
 
