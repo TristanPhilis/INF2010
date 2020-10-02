@@ -172,6 +172,25 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
      * @return Old DataType instance at key (null if none existed)
      */
     public DataType remove(KeyType key) {
+        DataType oldValue = get(key);
+
+        if(oldValue != null){
+            Node<KeyType, DataType> nodeToRemove =  map[hash(key)];
+            Node<KeyType, DataType> previousNode = null;
+            while(nodeToRemove.key != key){
+                previousNode = nodeToRemove;
+                nodeToRemove = nodeToRemove.next;
+            }
+
+            if(previousNode == null){
+                map[hash(key)] = nodeToRemove.next;
+            } else {
+                previousNode.next = nodeToRemove.next;
+            }
+            nodeToRemove.next = null;
+            size--;
+            return oldValue;
+        }
         return null;
     }
 
