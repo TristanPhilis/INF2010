@@ -1,8 +1,8 @@
 package tests;
 
+import edu.princeton.cs.algs4.LinearRegression;
 import org.junit.jupiter.api.Test;
 import tp2.HashMap;
-import edu.princeton.cs.algs4.LinearRegression;
 
 import java.time.Duration;
 import java.util.ArrayList;

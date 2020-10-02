@@ -85,7 +85,14 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
      * @param key Key which we want to know if exists within map
      * @return if key is already used in map
      */
-    public boolean containsKey(KeyType key) { return false; }
+    public boolean containsKey(KeyType key) {
+        for (int i = 0; i < map.length; i++){
+            if(map[i].key == key){
+                return true;
+            } else {return false;}
+        }
+        return false;
+    }
 
     /** TODO Average Case : O(1)
      * Finds the value attached to a key
@@ -93,7 +100,13 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
      * @return DataType instance attached to key (null if not found)
      */
     public DataType get(KeyType key) {
-        return null;
+        if (this.containsKey(key)){
+            for (int i = 0; i < map.length; i++){
+                if (map[i].key == key){
+                    return map[i].data;
+                }
+            }
+        } else { return null; }
     }
 
     /** TODO Average Case : O(1) , Worst case : O(n)
