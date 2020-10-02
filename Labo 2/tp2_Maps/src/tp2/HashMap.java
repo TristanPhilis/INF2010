@@ -80,6 +80,7 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
                 i += 2;
             }
         }
+        capacity = nextCapacity;
     }
 
     /** TODO Average Case : O(n)
@@ -87,13 +88,14 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
      * reassigns all contained values within the new map
      */
     private void rehash() {
-        increaseCapacity();
+        int oldCapacity = capacity;
         Node<KeyType, DataType>[] oldMap = new Node[capacity];
         System.arraycopy(map, 0, oldMap, 0, capacity);
+        increaseCapacity();
         map = new Node[capacity];
         size = 0;
 
-        for (int i = 0; i < capacity; i++){
+        for (int i = 0; i < oldCapacity; i++){
             if(oldMap[i] != null){
                 Node<KeyType, DataType> nodeToPlace = oldMap[i];
                 while(nodeToPlace.next != null){
@@ -115,7 +117,7 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
     public boolean containsKey(KeyType key) {
         if(map[hash(key)] != null){
             Node<KeyType, DataType> foundNode =  map[hash(key)];
-            while(foundNode.key != key){
+            while(!foundNode.key.equals(key)){
                 if(foundNode.next == null){
                     return false;
                 } else{
@@ -135,7 +137,7 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
     public DataType get(KeyType key) {
         if(containsKey(key)){
             Node<KeyType, DataType> foundNode =  map[hash(key)];
-            while(foundNode.key != key){
+            while(!foundNode.key.equals(key)){
                 foundNode = foundNode.next;
             }
             return foundNode.data;
@@ -154,7 +156,7 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
 
         if(oldValue != null){
             Node<KeyType, DataType> nodeToReplace =  map[hash(key)];
-            while(nodeToReplace.key != key){
+            while(!nodeToReplace.key.equals(key)){
                 nodeToReplace = nodeToReplace.next;
             }
             nodeToReplace.data = value;
@@ -162,6 +164,7 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
         }
         map[hash(key)] = nodeToPlace;
         size++;
+        if(needRehash()){rehash();}
 
         return null;
     }
@@ -177,7 +180,7 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
         if(oldValue != null){
             Node<KeyType, DataType> nodeToRemove =  map[hash(key)];
             Node<KeyType, DataType> previousNode = null;
-            while(nodeToRemove.key != key){
+            while(!nodeToRemove.key.equals(key)){
                 previousNode = nodeToRemove;
                 nodeToRemove = nodeToRemove.next;
             }
