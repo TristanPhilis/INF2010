@@ -1,6 +1,5 @@
 package tp2;
 
-import java.security.Key;
 import java.util.Iterator;
 
 public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
@@ -129,12 +128,16 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
      * @return DataType instance attached to key (null if not found)
      */
     public DataType get(KeyType key) {
-        if (this.containsKey(key)){
-            for (int i = 0; i < map.length; i++){
-                if (map[i].key == key){
-                    return map[i].data;
+        if(map[hash(key)] != null){
+            Node<KeyType, DataType> foundNode =  map[hash(key)];
+            while(foundNode.key != key){
+                if(foundNode.next == null){
+                    return null;
+                } else{
+                    foundNode = foundNode.next;
                 }
             }
+            return foundNode.data;
         }
         return null;
     }
