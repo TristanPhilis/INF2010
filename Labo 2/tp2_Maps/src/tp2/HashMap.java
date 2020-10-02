@@ -107,6 +107,7 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
                 }
             }
         } else { return null; }
+        return null;
     }
 
     /** TODO Average Case : O(1) , Worst case : O(n)
