@@ -1,5 +1,6 @@
 package tp2;
 
+import java.security.Key;
 import java.util.Iterator;
 
 public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
@@ -69,7 +70,22 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
      * Find the next prime after increasing the capacity by CAPACITY_INCREASE_FACTOR (multiplication)
      */
     private void increaseCapacity() {
-        // ...
+        int nextCapacity = (capacity * CAPACITY_INCREASE_FACTOR) + 1; //even numbers cannot be prime
+        double i = 3.0;
+
+        while(i <= Math.floor(Math.sqrt(nextCapacity))){
+            if((nextCapacity*10 / i) % 10 == 0){
+                i = 3.0; // reset counter
+                nextCapacity += 2; // increase to the next odd number
+            } else {
+                i += 2;
+            }
+        }
+
+        Node<KeyType, DataType>[] nextMap = new Node[nextCapacity];
+        System.arraycopy(map, 0, nextMap, 0, capacity);
+        capacity = nextCapacity;
+        map = nextMap;
     }
 
     /** TODO Average Case : O(n)
@@ -77,7 +93,14 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
      * reassigns all contained values within the new map
      */
     private void rehash() {
-        // ...
+        increaseCapacity();
+        Node<KeyType, DataType>[] placeHolder = new Node[capacity];
+        System.arraycopy(map, 0, placeHolder, 0, capacity);
+        map = new Node[capacity];
+
+        for (int i = 0; i < capacity; i++){
+
+        }
     }
 
     /** TODO Average Case : O(1)
@@ -86,10 +109,16 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
      * @return if key is already used in map
      */
     public boolean containsKey(KeyType key) {
-        for (int i = 0; i < map.length; i++){
-            if(map[i].key == key){
-                return true;
-            } else {return false;}
+        if(map[hash(key)] != null){
+            Node<KeyType, DataType> foundNode =  map[hash(key)];
+            while(foundNode.key != key){
+                if(foundNode.next == null){
+                    return false;
+                } else{
+                    foundNode = foundNode.next;
+                }
+            }
+            return true;
         }
         return false;
     }
@@ -106,7 +135,7 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
                     return map[i].data;
                 }
             }
-        } else { return null; }
+        }
         return null;
     }
 
@@ -116,6 +145,27 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
      * @return Old DataType instance at key (null if none existed)
      */
     public DataType put(KeyType key, DataType value) {
+        Node<KeyType, DataType> nodeToPlace = new Node<KeyType, DataType>(key, value);
+        int hashedKey = hash(key);
+
+        if(map[hashedKey] == null){
+            map[hashedKey] = nodeToPlace;
+            size++;
+        } else{
+            Node<KeyType, DataType> nodeToReplace =  map[hashedKey];
+            while(nodeToReplace.key != key){
+                if(nodeToReplace.next == null){
+                    nodeToReplace.next = nodeToPlace;
+                    size++;
+                    return null;
+                } else{
+                    nodeToReplace = nodeToReplace.next;
+                }
+            }
+            DataType oldValue = nodeToReplace.data;
+            nodeToReplace.data = value;
+            return oldValue;
+        }
         return null;
     }
 
