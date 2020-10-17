@@ -90,21 +90,20 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
     private void rehash() {
         int oldCapacity = capacity;
         Node<KeyType, DataType>[] oldMap = new Node[capacity];
-        System.arraycopy(map, 0, oldMap, 0, capacity);
+        //System.arraycopy(map, 0, oldMap, 0, capacity);
+        oldMap = map;
         increaseCapacity();
-        map = new Node[capacity];
         size = 0;
+        map = new Node[capacity];
+        Node<KeyType, DataType> nodeToPlace;
 
         for (int i = 0; i < oldCapacity; i++){
             if(oldMap[i] != null){
-                Node<KeyType, DataType> nodeToPlace = oldMap[i];
-                while(nodeToPlace.next != null){
-                    Node<KeyType, DataType> temp = oldMap[i].next;
-                    nodeToPlace.next = null;
+                nodeToPlace = oldMap[i];
+                do{
                     put(nodeToPlace.key, nodeToPlace.data);
-                    nodeToPlace = temp;
-                }
-                put(nodeToPlace.key, nodeToPlace.data);
+                    nodeToPlace = nodeToPlace.next;
+                }while(nodeToPlace != null);
             }
         }
     }
@@ -115,18 +114,7 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
      * @return if key is already used in map
      */
     public boolean containsKey(KeyType key) {
-        if(map[hash(key)] != null){
-            Node<KeyType, DataType> foundNode =  map[hash(key)];
-            while(!foundNode.key.equals(key)){
-                if(foundNode.next == null){
-                    return false;
-                } else{
-                    foundNode = foundNode.next;
-                }
-            }
-            return true;
-        }
-        return false;
+        return (get(key) != null);
     }
 
     /** TODO Average Case : O(1)
@@ -135,12 +123,10 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
      * @return DataType instance attached to key (null if not found)
      */
     public DataType get(KeyType key) {
-        if(containsKey(key)){
-            Node<KeyType, DataType> foundNode =  map[hash(key)];
-            while(!foundNode.key.equals(key)){
-                foundNode = foundNode.next;
-            }
-            return foundNode.data;
+        Node<KeyType, DataType> foundNode =  map[hash(key)];
+        while(foundNode != null){
+            if(foundNode.key.equals(key)){return foundNode.data;}
+            foundNode = foundNode.next;
         }
         return null;
     }
@@ -154,19 +140,27 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
         Node<KeyType, DataType> nodeToPlace = new Node<KeyType, DataType>(key, value);
         DataType oldValue = get(key);
 
-        if(oldValue != null){
+        if(oldValue != null){//reassigns value
             Node<KeyType, DataType> nodeToReplace =  map[hash(key)];
             while(!nodeToReplace.key.equals(key)){
                 nodeToReplace = nodeToReplace.next;
             }
             nodeToReplace.data = value;
-            return oldValue;
+        }else if(map[hash(key)] != null){//inserts at the end of a chain
+            Node<KeyType, DataType> previousNode =  map[hash(key)];
+            while(previousNode.next != null){
+                previousNode = previousNode.next;
+            }
+            previousNode.next = nodeToPlace;
+            size++;
+        }else{//inserts in an empty location
+            map[hash(key)] = nodeToPlace;
+            size++;
         }
-        map[hash(key)] = nodeToPlace;
-        size++;
+
         if(needRehash()){rehash();}
 
-        return null;
+        return oldValue; //either null or the oldValue
     }
 
     /** TODO Average Case : O(1)
@@ -230,18 +224,26 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
     // for (Key key : map) { doSomethingWith(key); }
     private class HashMapIterator implements Iterator<KeyType> {
         // TODO: Add any relevant data structures to remember where we are in the list.
+        private int current = 0;
+        private int iteratedThrough = 0;
 
         /** TODO Worst Case : O(n)
          * Determine if there is a new element remaining in the hashmap.
          */
-        public boolean hasNext() {
-            return false;
-        }
+        public boolean hasNext() {return iteratedThrough < size;}
 
         /** TODO Worst Case : O(n)
          * Return the next new key in the hashmap.
          */
         public KeyType next() {
+                if(hasNext()){
+                    while(current < map.length){
+                        if(map[current++] != null){
+                            iteratedThrough++;
+                            return map[current - 1].key;
+                        }
+                    }
+                }
             return null;
         }
     }
