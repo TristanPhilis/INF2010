@@ -45,6 +45,7 @@ class InterviewTest {
         assertTrue(Interview.isValidFlipped("126921"));
         assertTrue(Interview.isValidFlipped("912216"));
         assertFalse(Interview.isValidFlipped("123"));
+        assertFalse(Interview.isValidFlipped("12321"));
     }
 
     @Test
@@ -65,6 +66,13 @@ class InterviewTest {
         assertTrue(Interview.isValidFlippedWithPermutation("111558888"));
         assertTrue(Interview.isValidFlippedWithPermutation("6699111558888"));
         assertFalse(Interview.isValidFlippedWithPermutation("66991115588889"));
+        assertTrue(Interview.isValidFlippedWithPermutation("11112222"));
+        assertFalse(Interview.isValidFlippedWithPermutation("11112222696"));
+        assertFalse(Interview.isValidFlippedWithPermutation("111122223"));
+        assertFalse(Interview.isValidFlippedWithPermutation("111122224"));
+        assertFalse(Interview.isValidFlippedWithPermutation("111122227"));
+        assertTrue(Interview.isValidFlippedWithPermutation("111122228"));
+        assertFalse(Interview.isValidFlippedWithPermutation("1111222228"));
     }
 
     @Test
