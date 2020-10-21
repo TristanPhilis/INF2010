@@ -138,29 +138,26 @@ public class HashMap<KeyType, DataType> implements Iterable<KeyType> {
      */
     public DataType put(KeyType key, DataType value) {
         Node<KeyType, DataType> nodeToPlace = new Node<KeyType, DataType>(key, value);
-        DataType oldValue = get(key);
+        DataType oldValue;
 
-        if(oldValue != null){//reassigns value
-            Node<KeyType, DataType> nodeToReplace =  map[hash(key)];
-            while(!nodeToReplace.key.equals(key)){
-                nodeToReplace = nodeToReplace.next;
+        Node<KeyType, DataType> foundNode =  map[hash(key)];
+        while(foundNode != null){
+            if(foundNode.key.equals(key)){//reassigns value
+                oldValue = foundNode.data;
+                foundNode.data = value;
+                return oldValue;
+            } else if (foundNode.next == null) {//inserts at the end of the chain
+                foundNode.next = nodeToPlace;
+                size++;
+                if(needRehash()){rehash();}
+                return null;
             }
-            nodeToReplace.data = value;
-        }else if(map[hash(key)] != null){//inserts at the end of a chain
-            Node<KeyType, DataType> previousNode =  map[hash(key)];
-            while(previousNode.next != null){
-                previousNode = previousNode.next;
-            }
-            previousNode.next = nodeToPlace;
-            size++;
-        }else{//inserts in an empty location
-            map[hash(key)] = nodeToPlace;
-            size++;
+            foundNode = foundNode.next;
         }
-
+        map[hash(key)] = nodeToPlace;
+        size++;
         if(needRehash()){rehash();}
-
-        return oldValue; //either null or the oldValue
+        return null;
     }
 
     /** TODO Average Case : O(1)
