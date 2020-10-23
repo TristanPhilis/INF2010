@@ -104,6 +104,22 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      */
     public int getHeight() {
         return -1;
+        if (root != null) {
+            BinaryNode<ValueType> currentNode = root;
+            int n = 1;
+            int n_left = 0;
+            int n_right = 0;
+
+            if (this.left != null)
+                n_left = 1 + root.left.getHeight();
+
+            if (this.right != null)
+                n_right = 1 + root.right.getHeight();
+
+            n += Math.max(n_right, n_left);
+            return n - 1;
+        } else
+            return 0;
     }
 
     /** TODO Worst case : O( log n ) HAS TO BE ITERATIVE, NOT RECURSIVE
