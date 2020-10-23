@@ -54,8 +54,9 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      * @param value value to remove from the tree
      */
     public void remove(ValueType value){
-        if (root != null){
+        if (root != null && root.value.compareTo(value) != 0){
             BinaryNode<ValueType> nodeToRemove = root;
+            BinaryNode<ValueType> currentNode;
             while (nodeToRemove != null && nodeToRemove.value.compareTo(value) != 0){
                 if (value.compareTo(nodeToRemove.value) < 0){
                     nodeToRemove = nodeToRemove.left;
@@ -64,18 +65,30 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
                 }
             }
 
-            if (nodeToRemove != null) {//found a node
-                a;
-
-
-
-                if (nodeToRemove.parent.left == nodeToRemove) {
-                    nodeToRemove.parent.left = null;
+            if (nodeToRemove != null) {
+                if (nodeToRemove.right == null) {
+                    if (nodeToRemove.parent.left == nodeToRemove){
+                        nodeToRemove.parent.left = nodeToRemove.left;
+                    } else {
+                        nodeToRemove.parent.right = nodeToRemove.left;
+                    }
                 } else {
-                    nodeToRemove.parent.right = null;
+                    if (nodeToRemove.parent.left == nodeToRemove){
+                        nodeToRemove.parent.left = nodeToRemove.right;
+                    } else {
+                        nodeToRemove.parent.right = nodeToRemove.right;
+                    }
+                    currentNode = nodeToRemove.right;
+                    while (currentNode.left != null){
+                        currentNode = currentNode.left;
+                    }
+                    currentNode.left = nodeToRemove.left;
                 }
-                currentNode.parent = null;
+                nodeToRemove.parent = null;
             }
+
+        } else {
+            root = null;
         }
     }
 
@@ -104,22 +117,22 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      */
     public int getHeight() {
         return -1;
-        if (root != null) {
-            BinaryNode<ValueType> currentNode = root;
-            int n = 1;
-            int n_left = 0;
-            int n_right = 0;
-
-            if (this.left != null)
-                n_left = 1 + root.left.getHeight();
-
-            if (this.right != null)
-                n_right = 1 + root.right.getHeight();
-
-            n += Math.max(n_right, n_left);
-            return n - 1;
-        } else
-            return 0;
+//        if (root != null) {
+//            BinaryNode<ValueType> currentNode = root;
+//            int n = 1;
+//            int n_left = 0;
+//            int n_right = 0;
+//
+//            if (this.left != null)
+//                n_left = 1 + root.left.getHeight();
+//
+//            if (this.right != null)
+//                n_right = 1 + root.right.getHeight();
+//
+//            n += Math.max(n_right, n_left);
+//            return n - 1;
+//        } else
+//            return 0;
     }
 
     /** TODO Worst case : O( log n ) HAS TO BE ITERATIVE, NOT RECURSIVE
