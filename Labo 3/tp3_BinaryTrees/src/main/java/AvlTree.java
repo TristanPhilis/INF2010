@@ -18,7 +18,32 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      * @param value value to add to the tree
      */
     public void add(ValueType value) {
-
+        if (root != null){
+            BinaryNode<ValueType> currentNode = root;
+            while (currentNode.value.compareTo(value) != 0){
+                if (value.compareTo(currentNode.value) < 0){
+                    if (currentNode.left == null){
+                        BinaryNode<ValueType> addedNode = new BinaryNode<ValueType>(value, currentNode);
+                        currentNode.left = addedNode;
+                        currentNode = addedNode;
+                        //include balancing
+                    } else {
+                        currentNode = currentNode.left;
+                    }
+                } else {
+                    if (currentNode.right == null){
+                        BinaryNode<ValueType> addedNode = new BinaryNode<ValueType>(value, currentNode);
+                        currentNode.right = addedNode;
+                        currentNode = addedNode;
+                        //include balancing
+                    } else {
+                        currentNode = currentNode.right;
+                    }
+                }
+            }
+        } else {
+            root = new BinaryNode<>(value, null);
+        }
     }
 
     /** TODO Worst case : O ( log n ) HAS TO BE ITERATIVE, NOT RECURSIVE
@@ -29,7 +54,29 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      * @param value value to remove from the tree
      */
     public void remove(ValueType value){
+        if (root != null){
+            BinaryNode<ValueType> nodeToRemove = root;
+            while (nodeToRemove != null && nodeToRemove.value.compareTo(value) != 0){
+                if (value.compareTo(nodeToRemove.value) < 0){
+                    nodeToRemove = nodeToRemove.left;
+                } else {
+                    nodeToRemove = nodeToRemove.right;
+                }
+            }
 
+            if (nodeToRemove != null) {//found a node
+                a;
+
+
+
+                if (nodeToRemove.parent.left == nodeToRemove) {
+                    nodeToRemove.parent.left = null;
+                } else {
+                    nodeToRemove.parent.right = null;
+                }
+                currentNode.parent = null;
+            }
+        }
     }
 
     /** TODO Worst case : O ( log n ) HAS TO BE ITERATIVE, NOT RECURSIVE
@@ -39,7 +86,16 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      * @return if value already exists in the tree
      */
     public boolean contains(ValueType value) {
-        return false;
+        if (root == null) {return false;}
+        BinaryNode<ValueType> currentNode = root;
+        while(currentNode != null && currentNode.value.compareTo(value) != 0){
+            if(value.compareTo(currentNode.value) < 0){
+                currentNode = currentNode.left;
+            } else {
+                currentNode = currentNode.right;
+            }
+        }
+        return currentNode != null;
     }
 
     /** TODO Worst case : O( 1 )
