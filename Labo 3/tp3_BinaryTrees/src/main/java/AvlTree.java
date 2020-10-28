@@ -1,3 +1,5 @@
+import org.w3c.dom.Node;
+
 import java.util.ArrayDeque;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,6 +10,26 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
     private BinaryNode<ValueType> root;
 
     public AvlTree() { }
+
+    private void updateHeights(BinaryNode<ValueType> start){
+        if (start != null) {
+            BinaryNode<ValueType> currentNode = start;
+            while(currentNode != null) {
+                if (currentNode.left == null) {
+                    if (currentNode.right == null) {
+                        currentNode.height = 0;
+                    } else {
+                        currentNode.height = currentNode.right.height + 1;
+                    }
+                } else if (currentNode.right == null){
+                    currentNode.height = currentNode.left.height + 1;
+                } else {
+                    currentNode.height = Math.max(currentNode.left.height, currentNode.right.height) + 1;
+                }
+                currentNode = currentNode.parent;
+            }
+        }
+    }
 
     /** TODO Worst case : O ( log n ) HAS TO BE ITERATIVE, NOT RECURSIVE
      *
@@ -20,31 +42,30 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
     public void add(ValueType value) {
         if (root != null){
             BinaryNode<ValueType> currentNode = root;
+            BinaryNode<ValueType> addedNode = null;
             while (currentNode.value.compareTo(value) != 0){
                 if (value.compareTo(currentNode.value) < 0){
                     if (currentNode.left == null){
-                        BinaryNode<ValueType> addedNode = new BinaryNode<ValueType>(value, currentNode);
+                        addedNode = new BinaryNode<ValueType>(value, currentNode);
                         currentNode.left = addedNode;
-                        currentNode = addedNode;
-                        //include balancing
-                    } else {
-                        currentNode = currentNode.left;
                     }
+                    currentNode = currentNode.left;
                 } else {
                     if (currentNode.right == null){
-                        BinaryNode<ValueType> addedNode = new BinaryNode<ValueType>(value, currentNode);
+                        addedNode = new BinaryNode<ValueType>(value, currentNode);
                         currentNode.right = addedNode;
-                        currentNode = addedNode;
-                        //include balancing
-                    } else {
-                        currentNode = currentNode.right;
                     }
+                    currentNode = currentNode.right;
                 }
             }
+            updateHeights(addedNode);
+            //include balancing
         } else {
             root = new BinaryNode<>(value, null);
+            root.height = 0;
         }
     }
+
 
     /** TODO Worst case : O ( log n ) HAS TO BE ITERATIVE, NOT RECURSIVE
      *
@@ -54,9 +75,8 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      * @param value value to remove from the tree
      */
     public void remove(ValueType value){
-        if (root != null && root.value.compareTo(value) != 0){
+        if (root != null){
             BinaryNode<ValueType> nodeToRemove = root;
-            BinaryNode<ValueType> currentNode;
             while (nodeToRemove != null && nodeToRemove.value.compareTo(value) != 0){
                 if (value.compareTo(nodeToRemove.value) < 0){
                     nodeToRemove = nodeToRemove.left;
@@ -65,32 +85,60 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
                 }
             }
 
-            if (nodeToRemove != null) {
+            if (nodeToRemove != null) {//found the node
+                BinaryNode<ValueType> parentNode;
+                BinaryNode<ValueType> currentNode;
+                BinaryNode<ValueType> updateNode;
                 if (nodeToRemove.right == null) {
-                    if (nodeToRemove.parent.left == nodeToRemove){
-                        nodeToRemove.parent.left = nodeToRemove.left;
-                    } else {
-                        nodeToRemove.parent.right = nodeToRemove.left;
+                    if (nodeToRemove.left != null) {        //only left branch exists
+                        parentNode = nodeToRemove.left;
+                    } else {                                //no child branch
+                        parentNode = null;
                     }
-                } else {
-                    if (nodeToRemove.parent.left == nodeToRemove){
-                        nodeToRemove.parent.left = nodeToRemove.right;
-                    } else {
-                        nodeToRemove.parent.right = nodeToRemove.right;
-                    }
+                    updateNode = nodeToRemove.parent;
+                } else if (nodeToRemove.left == null) {     //only the right branch exists
+                    parentNode = nodeToRemove.right;
+                    updateNode = nodeToRemove.parent;
+                } else {                                    //Both branches exist
                     currentNode = nodeToRemove.right;
-                    while (currentNode.left != null){
+                    while (currentNode.left != null) {//finds the leftmost node
                         currentNode = currentNode.left;
                     }
-                    currentNode.left = nodeToRemove.left;
+                    parentNode = currentNode;
+                    parentNode.parent.left = parentNode.right;
+                    if (parentNode.right != null) {
+                        parentNode.right.parent = parentNode.parent;
+                        updateNode = parentNode.right;
+                    } else {
+                        updateNode = currentNode.parent;
+                    }
+                    parentNode.right = nodeToRemove.right;
+                    nodeToRemove.right.parent = parentNode;
+                    parentNode.left = nodeToRemove.left;
+                    nodeToRemove.left.parent = parentNode;
+                    parentNode.height = nodeToRemove.height;
                 }
-                nodeToRemove.parent = null;
-            }
 
-        } else {
-            root = null;
+
+                if (nodeToRemove == root) {
+                    if(parentNode != null) {parentNode.parent = null;}
+                    root = parentNode;
+                } else {
+                    if (parentNode != null) {parentNode.parent = nodeToRemove.parent;}
+                    if (nodeToRemove.parent.right == nodeToRemove) {
+                        nodeToRemove.parent.right = parentNode;
+                    } else {
+                        nodeToRemove.parent.left = parentNode;
+                    }
+                    nodeToRemove.parent = null;
+                }
+                nodeToRemove.right = null;
+                nodeToRemove.left = null;
+                if (updateNode != null) {updateHeights(updateNode);}
+            }
         }
     }
+
 
     /** TODO Worst case : O ( log n ) HAS TO BE ITERATIVE, NOT RECURSIVE
      *
@@ -128,7 +176,15 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      * @return Node which has the minimal value contained in our root tree
      */
     public ValueType findMin() {
-        return null;
+        if (root != null) {
+            BinaryNode<ValueType> currentNode = root;
+            while (currentNode.left != null) {
+                currentNode = currentNode.left;
+            }
+            return currentNode.value;
+        } else {
+            return null;
+        }
     }
 
 
@@ -136,7 +192,38 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      * Returns all values contained in the root tree in ascending order
      * @return Values contained in the root tree in ascending order
      */
-    public List<ValueType> infixOrder() { return new LinkedList<>(); }
+    public List<ValueType> infixOrder() {
+        LinkedList<ValueType> orderedList = new LinkedList<>();
+        BinaryNode<ValueType> current = root;
+        while (current.left != null) {
+            current = current.left;
+        }
+        orderedList.add(current.value);
+        boolean doneMakingList = false;
+
+        while (!doneMakingList) {
+            if (current.right != null){                                             //has a right child
+                current = current.right;
+                while (current.left != null) {
+                    current = current.left;
+                }
+            } else if (current.parent != null && current.parent.left == current) {  //going up to the parent from the left
+                current = current.parent;
+            } else {                                                                //going up to the parent from the right
+                while(current.parent != null && current.parent.right == current && !doneMakingList) {
+                    if (current.parent == root){
+                        doneMakingList = true;
+                    } else {
+                        current = current.parent;
+                    }
+                }
+                if (current.parent != null) {current = current.parent;}
+            }
+            if (!doneMakingList) {orderedList.add(current.value);}
+        }
+
+        return orderedList;
+    }
 
     /** TODO Worst case : O( n ) HAS TO BE ITERATIVE, NOT RECURSIVE
      *
