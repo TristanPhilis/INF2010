@@ -1,4 +1,3 @@
-
 *.lock
 *.bin
 *.bin
@@ -7,3 +6,4 @@
 Labo 3/tp3_BinaryTrees/build/reports/tests/test/classes/InterviewTest.html
 *.xml
 *.txt
+*.sqlite
