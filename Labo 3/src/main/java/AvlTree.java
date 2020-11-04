@@ -1,8 +1,10 @@
+import javafx.scene.layout.BorderRepeat;
 import org.w3c.dom.Node;
 
 import java.util.ArrayDeque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class AvlTree<ValueType extends Comparable<? super ValueType> > {
 
@@ -10,6 +12,7 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
     private BinaryNode<ValueType> root;
 
     public AvlTree() { }
+
 
     private void updateHeights(BinaryNode<ValueType> start){
         if (start != null) {
@@ -30,6 +33,7 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
             }
         }
     }
+
 
     /** TODO Worst case : O ( log n ) HAS TO BE ITERATIVE, NOT RECURSIVE
      *
@@ -159,6 +163,7 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
         return currentNode != null;
     }
 
+
     /** TODO Worst case : O( 1 )
      * Returns the max level contained in our root tree
      * @return Max level contained in our root tree
@@ -169,6 +174,7 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
             return root.height;
         }
     }
+
 
     /** TODO Worst case : O( log n ) HAS TO BE ITERATIVE, NOT RECURSIVE
      *
@@ -225,13 +231,36 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
         return orderedList;
     }
 
+
     /** TODO Worst case : O( n ) HAS TO BE ITERATIVE, NOT RECURSIVE
      *
      * Returns all values contained in the root tree in level order from top to bottom
      * @return Values contained in the root tree in level order from top to bottom
      */
     public List<ValueType> levelOrder(){
-        return new LinkedList<>();
+        LinkedList<ValueType> orderedList = new LinkedList<>();
+        LinkedList<BinaryNode<ValueType>> nodeList = new LinkedList<>();
+        if (root != null) {
+            BinaryNode<ValueType> nodeToAdd;
+            //necessary add to start the algorithm
+            nodeList.add(root);
+
+            for (int i = 0; i < nodeList.size(); i++) {
+                nodeToAdd = nodeList.get(i);
+                if(nodeToAdd.left != null) {
+                    nodeList.add(nodeToAdd.left);
+                }
+                if(nodeToAdd.right != null) {
+                    nodeList.add(nodeToAdd.right);
+                }
+            }
+
+            for (BinaryNode<ValueType> iter : nodeList){
+                orderedList.add(iter.value);
+            }
+        }
+
+        return orderedList;
     }
 
     /** TODO Worst case : O( log n ) HAS TO BE ITERATIVE, NOT RECURSIVE
