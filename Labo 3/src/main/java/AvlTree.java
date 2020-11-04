@@ -167,10 +167,7 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      * @return Max level contained in our root tree
      */
     public int getHeight() {
-        if (root == null) {return -1;}
-        else {
-            return root.height;
-        }
+        return root == null ? -1 : root.height;
     }
 
 
