@@ -311,7 +311,7 @@ class AvlTreeTest {
         System.out.println("Time spent JAVA : " + Xs.stream().mapToDouble(Double::doubleValue).sum() / 1000 + " seconds");
         System.out.println("Time spent : " + Ys.stream().mapToDouble(Double::doubleValue).sum() / 1000 + " seconds");
 
-        regression.plot("AvlTree");
+        //regression.plot("AvlTree");
 
         assertEquals(1.0, regression.R2(), 0.1, "Votre algorithme n'est pas en O(log n)");
     }

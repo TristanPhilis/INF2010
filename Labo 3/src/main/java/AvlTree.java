@@ -1,10 +1,5 @@
-import javafx.scene.layout.BorderRepeat;
-import org.w3c.dom.Node;
-
-import java.util.ArrayDeque;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
 public class AvlTree<ValueType extends Comparable<? super ValueType> > {
 
@@ -138,7 +133,10 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
                 }
                 nodeToRemove.right = null;
                 nodeToRemove.left = null;
-                if (updateNode != null) {updateHeights(updateNode);}
+                if (updateNode != null) {
+                    updateHeights(updateNode);
+                    balance(updateNode);
+                }
             }
         }
     }
@@ -264,6 +262,18 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
     }
 
 
+    //Function that returns the balancing factor of a node
+    private int getBalancingFactor(BinaryNode<ValueType> node) {
+        if (node.left == null) {
+            return -1 * node.height;
+        } else if (node.right == null) {
+            return node.height;
+        } else {
+            return node.left.height - node.right.height;
+        }
+    }
+
+
     /** TODO Worst case : O( log n ) HAS TO BE ITERATIVE, NOT RECURSIVE
      *
      * Balances the whole tree
@@ -273,13 +283,7 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
         BinaryNode<ValueType> current = node;
         int balancingFactor;
         while(current != null) {//stops when current reaches the root
-            if (current.left == null) {
-                balancingFactor = -1 * current.height;
-            } else if (current.right == null) {
-                balancingFactor = current.height;
-            } else {
-                balancingFactor = current.left.height - current.right.height;
-            }
+            balancingFactor = getBalancingFactor(current);
 
             if(balancingFactor >= 2) {
                 rotateLeft(current);
@@ -299,13 +303,37 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      * @param node1 Node to become child of its left child
      */
     private void rotateLeft(BinaryNode<ValueType> node1){
-        if(node1 == root){
-            root = node1.left;
+        int childBalancing = getBalancingFactor(node1.left);
+        if (childBalancing == -1) { //right child has a left child
+            rotateRight(node1.left);
         }
-        node1.left.right = node1;
-        node1.left.parent = node1.parent;
-        node1.parent = node1.left;
-        node1.left = null;
+
+        BinaryNode<ValueType> parentNode = node1.left;
+        if (node1 == root) {
+            root = parentNode;
+        } else {
+            if (node1.parent.left == node1) {
+                node1.parent.left = parentNode;
+            } else {
+                node1.parent.right = parentNode;
+            }
+        }
+        parentNode.parent = node1.parent;
+
+        node1.left = parentNode.right;
+        if (parentNode.right != null) {
+            parentNode.right.parent = node1;
+        }
+        parentNode.right = node1;
+        node1.parent = parentNode;
+        updateHeights(node1);
+//        if(node1 == root){
+//            root = node1.left;
+//        }
+//        node1.left.right = node1;
+//        node1.left.parent = node1.parent;
+//        node1.parent = node1.left;
+//        node1.left = null;
     }
 
 
@@ -315,7 +343,30 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      * @param node1 Node to become child of its right child
      */
     private void rotateRight(BinaryNode<ValueType> node1){
-        
+        int childBalancing = getBalancingFactor(node1.right);
+        if (childBalancing == 1) { //right child has a left child
+            rotateLeft(node1.right);
+        }
+
+        BinaryNode<ValueType> parentNode = node1.right;
+        if (node1 == root) {
+            root = parentNode;
+        } else {
+            if (node1.parent.left == node1) {
+                node1.parent.left = parentNode;
+            } else {
+                node1.parent.right = parentNode;
+            }
+        }
+        parentNode.parent = node1.parent;
+
+        node1.right = parentNode.left;
+        if (parentNode.left != null) {
+            parentNode.left.parent = node1;
+        }
+        parentNode.left = node1;
+        node1.parent = parentNode;
+        updateHeights(node1);
     }
 
 
