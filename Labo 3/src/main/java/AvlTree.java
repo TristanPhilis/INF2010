@@ -63,7 +63,7 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
                 }
             }
             updateHeights(addedNode);
-            //include balancing
+            balance(addedNode);
         } else {
             root = new BinaryNode<>(value, null);
             root.height = 0;
@@ -263,14 +263,35 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
         return orderedList;
     }
 
+
     /** TODO Worst case : O( log n ) HAS TO BE ITERATIVE, NOT RECURSIVE
      *
      * Balances the whole tree
      * @param node Node to balance all the way to root
      */
     private void balance(BinaryNode<ValueType> node) {
+        BinaryNode<ValueType> current = node;
+        int balancingFactor;
+        while(current != null) {//stops when current reaches the root
+            if (current.left == null) {
+                balancingFactor = -1 * current.height;
+            } else if (current.right == null) {
+                balancingFactor = current.height;
+            } else {
+                balancingFactor = current.left.height - current.right.height;
+            }
 
+            if(balancingFactor >= 2) {
+                rotateLeft(current);
+                updateHeights(current);
+            } else if (balancingFactor <= -2) {
+                rotateRight(current);
+                updateHeights(current);
+            }
+            current = current.parent;
+        }
     }
+
 
     /** TODO Worst case : O ( 1 )
      *
@@ -278,8 +299,15 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      * @param node1 Node to become child of its left child
      */
     private void rotateLeft(BinaryNode<ValueType> node1){
-
+        if(node1 == root){
+            root = node1.left;
+        }
+        node1.left.right = node1;
+        node1.left.parent = node1.parent;
+        node1.parent = node1.left;
+        node1.left = null;
     }
+
 
     /** TODO Worst case : O ( 1 )
      *
@@ -287,8 +315,9 @@ public class AvlTree<ValueType extends Comparable<? super ValueType> > {
      * @param node1 Node to become child of its right child
      */
     private void rotateRight(BinaryNode<ValueType> node1){
-
+        
     }
+
 
     static private class BinaryNode<ValueType> {
         ValueType value;
