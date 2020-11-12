@@ -35,6 +35,11 @@ public class Point implements Comparable<Point> {
     @Override
     public int compareTo(Point point) {
         // TODO ceci vous sera peut etre utile
+        //We use distance as the sorting value
+        return 0;//to replace by something better
+    }
+
+    private int findDistance(){
         return 0;
     }
 }
