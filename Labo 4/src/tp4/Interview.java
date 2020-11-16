@@ -1,6 +1,9 @@
 package tp4;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public final class Interview {
     private static class Pair {
@@ -10,6 +13,13 @@ public final class Interview {
         Pair(int index, Point point){
             this.index = index;
             this.point = point;
+        }
+    }
+
+    static class SortPairByDistance implements Comparator<Pair> {
+        @Override
+        public int compare(Pair o1, Pair o2) {
+            return o1.point.compareTo(o2.point);
         }
     }
 
@@ -39,38 +49,52 @@ public final class Interview {
      */
     // TODO
     public static List<Integer> getFriendsToRemove(Integer circleSize, List<Integer> centers, List<Point> points) {
+        /** La complexité totale de l'algorithme est de O(n^2*log(n)) dans le pire des cas où a et c tendent vers n
+         *  sans que a ne depasse n */
         List<Integer> indexToRemove = new ArrayList<>();
-        if (circleSize < points.size()) {
-            List<List<Pair>> allCentersList = new ArrayList<>();
+        if (circleSize <= points.size()) { //O(n^2*log(n)) + O(n) + O(n) + O(n) -> O(n^2*log(n))
+            List<Pair> allCentersList = new ArrayList<>();
 
-            for (Integer center : centers) {
+            for (Integer center : centers) { //O(n) * (O(n)+O(n)+O(n*log(n))+O(n)) -> O(n^2*log(n))
                 List<Pair> centeredListPoints = new ArrayList<>();
 
-                for (int i = 0; i < points.size(); i++) {
+                for (int i = 0; i < points.size(); i++) { //O(n)
                     centeredListPoints.add(new Pair(i, new Point(points.get(center), points.get(i))));
                 }
 
-                class SortPairByDistance implements Comparator<Pair> {
-                    @Override
-                    public int compare(Pair o1, Pair o2) {
-                        return o1.point.compareTo(o2.point);
-                    }
-                }
+                //removes the center from the neighbour list
+                centeredListPoints.removeIf(obj -> obj.index.equals(center)); //O(n)
 
-                centeredListPoints.sort(new SortPairByDistance());
-                centeredListPoints.clear();
+                centeredListPoints.sort(new SortPairByDistance()); //O(n*log(n))
+
+                //Takes only the circleSize nearest friends
+                for (int i = 0; i < circleSize; i++) { //O(n)
+                    allCentersList.add(centeredListPoints.get(i)); //O(1) because ArrayList
+                }
             }
 
-        } else {
-            for (int i = 0; i < points.size(); i++) {
+            Integer[] numberOfCalls = new Integer[points.size()];
+            Arrays.fill(numberOfCalls,0); //O(n)
+
+            for (Pair iter : allCentersList) { //O(n)
+                numberOfCalls[iter.index]++;
+            }
+
+            for (int i = 0; i < numberOfCalls.length; i++) { //O(n)
+                if (numberOfCalls[i] > 1) {
+                    indexToRemove.add(i);
+                }
+            }
+
+            return indexToRemove;
+        } else { //O(n) + O(n^2) + O(n) -> O(n^2)
+            for (int i = 0; i < points.size(); i++) { //O(n)
                 indexToRemove.add(i);
             }
-            for(Integer iter : centers) {
-                indexToRemove.remove(iter);
+            for(Integer iter : centers) { //O(n^2)
+                indexToRemove.remove(iter); //O(n)
             }
             return indexToRemove;
         }
-
-        return null;
     }
 }
