@@ -27,8 +27,9 @@ public final class Interview {
      * Il est peut etre possible d'avoir une meilleure complexite, soyez clair dans vos explications si vous croyez
      * avoir trouve :)
      */
+    // TODO
     public static List<Integer> getFriendsToRemove(Integer circleSize, List<Integer> centers, List<Point> points) {
-        // TODO
+        
         return null;
     }
 }

@@ -93,7 +93,7 @@ class HeapTest {
         LinearRegression regression = new LinearRegression(Xs.toArray(new Double[0]), Ys.toArray(new Double[0]));
         // The trend should be linear between input size and time => R2 ~= 1 => O(n).
         System.out.println(regression.R2());
-        regression.plot("testComplexityWithArrayInitializationWithBarometer");
+        //regression.plot("testComplexityWithArrayInitializationWithBarometer");
         assertEquals(1.0, regression.R2(), 0.01);
     }
 
@@ -127,7 +127,7 @@ class HeapTest {
         LinearRegression regression = new LinearRegression(Xs.toArray(new Double[0]), Ys.toArray(new Double[0]));
         // The trend should be linear between input size and time => R2 ~= 1 => O(nlog(n)). -> tends to n on large numbers
         System.out.println(regression.R2());
-        regression.plot("testComplexitySortWithBarometer");
+        //regression.plot("testComplexitySortWithBarometer");
         assertEquals(1.0, regression.R2(), 0.01);
     }
 
@@ -155,7 +155,7 @@ class HeapTest {
             LinearRegression regression = new LinearRegression(Xs.toArray(new Double[0]), Ys.toArray(new Double[0]));
             // The trend should be linear between input size and time => R2 ~= 1 => O(nlog(n)). -> tends to n on large numbers
             System.out.println(regression.R2());
-            regression.plot("testComplexitySortWithTime");
+            //regression.plot("testComplexitySortWithTime");
             assertEquals(1.0, regression.R2(), 0.1);
         }, "Votre algorithme n'est probablement pas en O(nlog(n))");
     }
