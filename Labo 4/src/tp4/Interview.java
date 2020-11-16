@@ -3,6 +3,16 @@ package tp4;
 import java.util.*;
 
 public final class Interview {
+    private static class Pair {
+        public Integer index;
+        public Point point;
+
+        Pair(int index, Point point){
+            this.index = index;
+            this.point = point;
+        }
+    }
+
     /**
      * @param circleSize le nombre d'amis que l'on doit inclure dans le cercle
      * @param centers les indices des centres dans "points"
@@ -29,7 +39,38 @@ public final class Interview {
      */
     // TODO
     public static List<Integer> getFriendsToRemove(Integer circleSize, List<Integer> centers, List<Point> points) {
-        
+        List<Integer> indexToRemove = new ArrayList<>();
+        if (circleSize < points.size()) {
+            List<List<Pair>> allCentersList = new ArrayList<>();
+
+            for (Integer center : centers) {
+                List<Pair> centeredListPoints = new ArrayList<>();
+
+                for (int i = 0; i < points.size(); i++) {
+                    centeredListPoints.add(new Pair(i, new Point(points.get(center), points.get(i))));
+                }
+
+                class SortPairByDistance implements Comparator<Pair> {
+                    @Override
+                    public int compare(Pair o1, Pair o2) {
+                        return o1.point.compareTo(o2.point);
+                    }
+                }
+
+                centeredListPoints.sort(new SortPairByDistance());
+                centeredListPoints.clear();
+            }
+
+        } else {
+            for (int i = 0; i < points.size(); i++) {
+                indexToRemove.add(i);
+            }
+            for(Integer iter : centers) {
+                indexToRemove.remove(iter);
+            }
+            return indexToRemove;
+        }
+
         return null;
     }
 }

@@ -17,6 +17,11 @@ public class Point implements Comparable<Point> {
         this.y = y;
     }
 
+    public Point(Point origin, Point point) {
+        this.x = point.x - origin.x;
+        this.y = point.y - origin.y;
+    }
+
     @Override
     public String toString() {
         return String.format("{X: %d, Y: %d}", x, y);
@@ -33,10 +38,10 @@ public class Point implements Comparable<Point> {
     }
 
     @Override
+    // TODO ceci vous sera peut etre utile
+    //We use distance as the sorting value
     public int compareTo(Point point) {
-        // TODO ceci vous sera peut etre utile
-        //We use distance as the sorting value
-        return 0;//to replace by something better
+        return Integer.compare(Math.abs(this.x) + Math.abs(this.y), Math.abs(point.x) + Math.abs(point.y));
     }
 
     private int findDistance(){
